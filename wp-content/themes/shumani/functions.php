@@ -1,35 +1,35 @@
 <?php
 add_action( 'after_setup_theme', 'shumani_setup' );
 function shumani_setup() {
-load_theme_textdomain( 'shumani', get_template_directory() . '/languages' );
-add_theme_support( 'title-tag' );
-add_theme_support( 'post-thumbnails' );
-add_theme_support( 'responsive-embeds' );
-add_theme_support( 'automatic-feed-links' );
-add_theme_support( 'html5', array( 'search-form', 'navigation-widgets' ) );
-add_theme_support( 'woocommerce' );
-global $content_width;
-if ( !isset( $content_width ) ) { $content_width = 1920; }
-register_nav_menus( array( 'main-menu' => esc_html__( 'Main Menu', 'shumani' ) ) );
-}
-add_action( 'admin_notices', 'shumani_notice' );
-function shumani_notice() {
-$user_id = get_current_user_id();
-$admin_url = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-$param = ( count( $_GET ) ) ? '&' : '?';
-if ( !get_user_meta( $user_id, 'shumani_notice_dismissed_10' ) && current_user_can( 'manage_options' ) )
-echo '<div class="notice notice-info"><p><a href="' . esc_url( $admin_url ), esc_html( $param ) . 'dismiss" class="alignright" style="text-decoration:none"><big>' . esc_html__( 'Ⓧ', 'shumani' ) . '</big></a>' . wp_kses_post( __( '<big><strong>🏆 Thank you for using shumani!</strong></big>', 'shumani' ) ) . '<p>' . esc_html__( 'Powering over 10k websites! Buy me a sandwich! 🥪', 'shumani' ) . '</p><a href="https://github.com/bhadaway/shumani/issues/57" class="button-primary" target="_blank"><strong>' . esc_html__( 'How do you use shumani?', 'shumani' ) . '</strong></a> <a href="https://opencollective.com/shumani" class="button-primary" style="background-color:green;border-color:green" target="_blank"><strong>' . esc_html__( 'Donate', 'shumani' ) . '</strong></a> <a href="https://wordpress.org/support/theme/shumani/reviews/#new-post" class="button-primary" style="background-color:purple;border-color:purple" target="_blank"><strong>' . esc_html__( 'Review', 'shumani' ) . '</strong></a> <a href="https://github.com/bhadaway/shumani/issues" class="button-primary" style="background-color:orange;border-color:orange" target="_blank"><strong>' . esc_html__( 'Support', 'shumani' ) . '</strong></a></p></div>';
-}
-add_action( 'admin_init', 'shumani_notice_dismissed' );
-function shumani_notice_dismissed() {
-$user_id = get_current_user_id();
-if ( isset( $_GET['dismiss'] ) )
-add_user_meta( $user_id, 'shumani_notice_dismissed_10', 'true', true );
+    load_theme_textdomain( 'shumani', get_template_directory() . '/languages' );
+    add_theme_support( 'title-tag' );
+    add_theme_support( 'post-thumbnails' );
+    add_theme_support( 'responsive-embeds' );
+    add_theme_support( 'automatic-feed-links' );
+    add_theme_support( 'html5', array( 'search-form', 'navigation-widgets' ) );
+    add_theme_support( 'woocommerce' );
+    global $content_width;
+    if ( !isset( $content_width ) ) { $content_width = 1920; }
+    register_nav_menus( array( 'main-menu' => esc_html__( 'Main Menu', 'shumani' ) ) );
+    }
+    add_action( 'admin_notices', 'shumani_notice' );
+    function shumani_notice() {
+    $user_id = get_current_user_id();
+    $admin_url = ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $param = ( count( $_GET ) ) ? '&' : '?';
+    if ( !get_user_meta( $user_id, 'shumani_notice_dismissed_10' ) && current_user_can( 'manage_options' ) )
+    echo '<div class="notice notice-info"><p><a href="' . esc_url( $admin_url ), esc_html( $param ) . 'dismiss" class="alignright" style="text-decoration:none"><big>' . esc_html__( 'Ⓧ', 'shumani' ) . '</big></a>' . wp_kses_post( __( '<big><strong>🏆 Thank you for using shumani!</strong></big>', 'shumani' ) ) . '<p>' . esc_html__( 'Powering over 10k websites! Buy me a sandwich! 🥪', 'shumani' ) . '</p><a href="https://github.com/bhadaway/shumani/issues/57" class="button-primary" target="_blank"><strong>' . esc_html__( 'How do you use shumani?', 'shumani' ) . '</strong></a> <a href="https://opencollective.com/shumani" class="button-primary" style="background-color:green;border-color:green" target="_blank"><strong>' . esc_html__( 'Donate', 'shumani' ) . '</strong></a> <a href="https://wordpress.org/support/theme/shumani/reviews/#new-post" class="button-primary" style="background-color:purple;border-color:purple" target="_blank"><strong>' . esc_html__( 'Review', 'shumani' ) . '</strong></a> <a href="https://github.com/bhadaway/shumani/issues" class="button-primary" style="background-color:orange;border-color:orange" target="_blank"><strong>' . esc_html__( 'Support', 'shumani' ) . '</strong></a></p></div>';
+    }
+    add_action( 'admin_init', 'shumani_notice_dismissed' );
+    function shumani_notice_dismissed() {
+    $user_id = get_current_user_id();
+    if ( isset( $_GET['dismiss'] ) )
+    add_user_meta( $user_id, 'shumani_notice_dismissed_10', 'true', true );
 }
 add_action( 'wp_enqueue_scripts', 'shumani_enqueue' );
 function shumani_enqueue() {
-wp_enqueue_style( 'shumani-style', get_stylesheet_uri() );
-wp_enqueue_script( 'jquery' );
+    wp_enqueue_style( 'shumani-style', get_stylesheet_uri() );
+    wp_enqueue_script( 'jquery' );
 }
 add_action( 'wp_footer', 'shumani_footer' );
 function shumani_footer() {
