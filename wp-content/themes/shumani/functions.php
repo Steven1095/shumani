@@ -1,4 +1,5 @@
 <?php
+
 add_action( 'after_setup_theme', 'shumani_setup' );
 function shumani_setup() {
     load_theme_textdomain( 'shumani', get_template_directory() . '/languages' );
@@ -26,141 +27,226 @@ function shumani_setup() {
     if ( isset( $_GET['dismiss'] ) )
     add_user_meta( $user_id, 'shumani_notice_dismissed_10', 'true', true );
 }
+
 add_action( 'wp_enqueue_scripts', 'shumani_enqueue' );
 function shumani_enqueue() {
     wp_enqueue_style( 'shumani-style', get_stylesheet_uri() );
     wp_enqueue_script( 'jquery' );
 }
+
 add_action( 'wp_footer', 'shumani_footer' );
 function shumani_footer() {
-?>
-<script>
-jQuery(document).ready(function($) {
-var deviceAgent = navigator.userAgent.toLowerCase();
-if (deviceAgent.match(/(iphone|ipod|ipad)/)) {
-$("html").addClass("ios");
-$("html").addClass("mobile");
-}
-if (deviceAgent.match(/(Android)/)) {
-$("html").addClass("android");
-$("html").addClass("mobile");
-}
-if (navigator.userAgent.search("MSIE") >= 0) {
-$("html").addClass("ie");
-}
-else if (navigator.userAgent.search("Chrome") >= 0) {
-$("html").addClass("chrome");
-}
-else if (navigator.userAgent.search("Firefox") >= 0) {
-$("html").addClass("firefox");
-}
-else if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
-$("html").addClass("safari");
-}
-else if (navigator.userAgent.search("Opera") >= 0) {
-$("html").addClass("opera");
-}
-});
-</script>
-<?php
+    ?>
+    <script>
+    jQuery(document).ready(function($) {
+    var deviceAgent = navigator.userAgent.toLowerCase();
+    if (deviceAgent.match(/(iphone|ipod|ipad)/)) {
+    $("html").addClass("ios");
+    $("html").addClass("mobile");
+    }
+    if (deviceAgent.match(/(Android)/)) {
+    $("html").addClass("android");
+    $("html").addClass("mobile");
+    }
+    if (navigator.userAgent.search("MSIE") >= 0) {
+    $("html").addClass("ie");
+    }
+    else if (navigator.userAgent.search("Chrome") >= 0) {
+    $("html").addClass("chrome");
+    }
+    else if (navigator.userAgent.search("Firefox") >= 0) {
+    $("html").addClass("firefox");
+    }
+    else if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
+    $("html").addClass("safari");
+    }
+    else if (navigator.userAgent.search("Opera") >= 0) {
+    $("html").addClass("opera");
+    }
+    });
+    </script>
+    <?php
 }
 add_filter( 'document_title_separator', 'shumani_document_title_separator' );
 function shumani_document_title_separator( $sep ) {
-$sep = esc_html( '|' );
-return $sep;
+    $sep = esc_html( '|' );
+    return $sep;
 }
+
 add_filter( 'the_title', 'shumani_title' );
 function shumani_title( $title ) {
-if ( $title == '' ) {
-return esc_html( '...' );
-} else {
-return wp_kses_post( $title );
+    if ( $title == '' ) {
+    return esc_html( '...' );
+    } else {
+    return wp_kses_post( $title );
+    }
 }
-}
+
 function shumani_schema_type() {
-$schema = 'https://schema.org/';
-if ( is_single() ) {
-$type = "Article";
-} elseif ( is_author() ) {
-$type = 'ProfilePage';
-} elseif ( is_search() ) {
-$type = 'SearchResultsPage';
-} else {
-$type = 'WebPage';
+    $schema = 'https://schema.org/';
+    if ( is_single() ) {
+    $type = "Article";
+    } elseif ( is_author() ) {
+    $type = 'ProfilePage';
+    } elseif ( is_search() ) {
+    $type = 'SearchResultsPage';
+    } else {
+    $type = 'WebPage';
+    }
+    echo 'itemscope itemtype="' . esc_url( $schema ) . esc_attr( $type ) . '"';
 }
-echo 'itemscope itemtype="' . esc_url( $schema ) . esc_attr( $type ) . '"';
-}
+
 add_filter( 'nav_menu_link_attributes', 'shumani_schema_url', 10 );
 function shumani_schema_url( $atts ) {
-$atts['itemprop'] = 'url';
-return $atts;
+    $atts['itemprop'] = 'url';
+    return $atts;
 }
+
 if ( !function_exists( 'shumani_wp_body_open' ) ) {
-function shumani_wp_body_open() {
-do_action( 'wp_body_open' );
+    function shumani_wp_body_open() {
+    do_action( 'wp_body_open' );
+    }
 }
-}
+
 add_action( 'wp_body_open', 'shumani_skip_link', 5 );
 function shumani_skip_link() {
-echo '<a href="#content" class="skip-link screen-reader-text">' . esc_html__( 'Skip to the content', 'shumani' ) . '</a>';
+    echo '<a href="#content" class="skip-link screen-reader-text">' . esc_html__( 'Skip to the content', 'shumani' ) . '</a>';
 }
+
 add_filter( 'the_content_more_link', 'shumani_read_more_link' );
 function shumani_read_more_link() {
-if ( !is_admin() ) {
-return ' <a href="' . esc_url( get_permalink() ) . '" class="more-link">' . sprintf( __( '...%s', 'shumani' ), '<span class="screen-reader-text">  ' . esc_html( get_the_title() ) . '</span>' ) . '</a>';
+    if ( !is_admin() ) {
+        return ' <a href="' . esc_url( get_permalink() ) . '" class="more-link">' . sprintf( __( '...%s', 'shumani' ), '<span class="screen-reader-text">  ' . esc_html( get_the_title() ) . '</span>' ) . '</a>';
+    }
 }
-}
+
 add_filter( 'excerpt_more', 'shumani_excerpt_read_more_link' );
 function shumani_excerpt_read_more_link( $more ) {
-if ( !is_admin() ) {
-global $post;
-return ' <a href="' . esc_url( get_permalink( $post->ID ) ) . '" class="more-link">' . sprintf( __( '...%s', 'shumani' ), '<span class="screen-reader-text">  ' . esc_html( get_the_title() ) . '</span>' ) . '</a>';
+    if ( !is_admin() ) {
+        global $post;
+        return ' <a href="' . esc_url( get_permalink( $post->ID ) ) . '" class="more-link">' . sprintf( __( '...%s', 'shumani' ), '<span class="screen-reader-text">  ' . esc_html( get_the_title() ) . '</span>' ) . '</a>';
+    }
 }
-}
+
 add_filter( 'big_image_size_threshold', '__return_false' );
 add_filter( 'intermediate_image_sizes_advanced', 'shumani_image_insert_override' );
 function shumani_image_insert_override( $sizes ) {
-unset( $sizes['medium_large'] );
-unset( $sizes['1536x1536'] );
-unset( $sizes['2048x2048'] );
-return $sizes;
+    unset( $sizes['medium_large'] );
+    unset( $sizes['1536x1536'] );
+    unset( $sizes['2048x2048'] );
+    return $sizes;
 }
+
 add_action( 'widgets_init', 'shumani_widgets_init' );
 function shumani_widgets_init() {
-register_sidebar( array(
-'name' => esc_html__( 'Sidebar Widget Area', 'shumani' ),
-'id' => 'primary-widget-area',
-'before_widget' => '<li id="%1$s" class="widget-container %2$s">',
-'after_widget' => '</li>',
-'before_title' => '<h3 class="widget-title">',
-'after_title' => '</h3>',
-) );
+    register_sidebar( array(
+    'name' => esc_html__( 'Sidebar Widget Area', 'shumani' ),
+    'id' => 'primary-widget-area',
+    'before_widget' => '<li id="%1$s" class="widget-container %2$s">',
+    'after_widget' => '</li>',
+    'before_title' => '<h3 class="widget-title">',
+    'after_title' => '</h3>',
+    ) );
 }
+
 add_action( 'wp_head', 'shumani_pingback_header' );
 function shumani_pingback_header() {
-if ( is_singular() && pings_open() ) {
-printf( '<link rel="pingback" href="%s">' . "\n", esc_url( get_bloginfo( 'pingback_url' ) ) );
+    if ( is_singular() && pings_open() ) {
+    printf( '<link rel="pingback" href="%s">' . "\n", esc_url( get_bloginfo( 'pingback_url' ) ) );
+    }
 }
-}
+
 add_action( 'comment_form_before', 'shumani_enqueue_comment_reply_script' );
 function shumani_enqueue_comment_reply_script() {
-if ( get_option( 'thread_comments' ) ) {
-wp_enqueue_script( 'comment-reply' );
+    if ( get_option( 'thread_comments' ) ) {
+    wp_enqueue_script( 'comment-reply' );
+    }
 }
-}
+
 function shumani_custom_pings( $comment ) {
-?>
-<li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>"><?php echo esc_url( comment_author_link() ); ?></li>
-<?php
+    ?>
+    <li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>"><?php echo esc_url( comment_author_link() ); ?></li>
+    <?php
 }
+
 add_filter( 'get_comments_number', 'shumani_comment_count', 0 );
 function shumani_comment_count( $count ) {
-if ( !is_admin() ) {
-global $id;
-$get_comments = get_comments( 'status=approve&post_id=' . $id );
-$comments_by_type = separate_comments( $get_comments );
-return count( $comments_by_type['comment'] );
-} else {
-return $count;
+    if ( !is_admin() ) {
+    global $id;
+    $get_comments = get_comments( 'status=approve&post_id=' . $id );
+    $comments_by_type = separate_comments( $get_comments );
+    return count( $comments_by_type['comment'] );
+    } else {
+    return $count;
+    }
 }
+
+/* Shortcode for to list categories of Shumani */
+// function shumani_categories_equipment() {
+//     $list = wp_list_categories( array(
+//         'taxonomy'   => 'category',
+//         'hide_empty' => 0,
+//         'echo'       => '',
+//         'title_li'   => '',
+//         // other args here
+//     ) );
+//     return '
+//     <div class="e-con-inner">
+//         <div class="elementor-element elementor-element-646d9fb e-con-full e-flex wpr-particle-no wpr-jarallax-no wpr-parallax-no wpr-sticky-section-no e-con e-child" data-id="646d9fb" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+//             <div class="elementor-element elementor-element-bc43235 elementor-widget elementor-widget-spacer" data-id="bc43235" data-element_type="widget" data-widget_type="spacer.default">
+//                 <div class="elementor-widget-container">
+//                     <div class="elementor-spacer">
+//                         <div class="elementor-spacer-inner"></div>
+//                     </div>
+//                 </div>
+//             </div>
+//             <div class="elementor-element elementor-element-182356d elementor-widget elementor-widget-heading" data-id="182356d" data-element_type="widget" data-widget_type="heading.default">
+//                 <div class="elementor-widget-container">
+//                     <h2 class="elementor-heading-title elementor-size-default">'.$list.'</h2>		
+//                 </div>
+//             </div>
+//         </div>
+//     </div>';
+
+//     // $categories = get_the_category();
+//     // if ( ! empty( $categories ) ) {
+//     //     return   '<a href="' . esc_url( get_category_link( $categories[0]->term_id ) ) . '">' . esc_html( $categories[0]->name ) . '</a>';
+//     // }
+
+// }
+    
+// add_shortcode("shumani_categories_equipment", "shumani_categories_equipment");
+
+function shumani_categories_equipment( $atts, $content=null ){
+
+    $categories = get_categories();
+
+    if (!empty($categories)) {
+        foreach ($categories as $category) {
+            echo
+            '
+            <div style="background-image: url(http://localhost/shumani/wp-content/uploads/2024/04/categories-2.png);" class="elementor-element elementor-element-646d9fb e-con-full e-flex wpr-particle-no wpr-jarallax-no wpr-parallax-no wpr-sticky-section-no e-con e-child" data-id="646d9fb" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+                <div class="elementor-element elementor-element-bc43235 elementor-widget elementor-widget-spacer" data-id="bc43235" data-element_type="widget" data-widget_type="spacer.default">
+                    <div class="elementor-widget-container">
+                        <div class="elementor-spacer">
+                            <div class="elementor-spacer-inner"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="elementor-element elementor-element-182356d elementor-widget elementor-widget-heading" data-id="182356d" data-element_type="widget" data-widget_type="heading.default">
+                    <div class="elementor-widget-container">
+                        <h2 class="elementor-heading-title elementor-size-default"><a href="' . get_category_link($category->term_id) . '">' . $category->name . '</a></h2>		
+                    </div>
+                </div>
+            </div>
+            ';
+        }
+    } else {
+        echo '<p>No categories found.</p>';
+    }
+
 }
+add_shortcode('shumani_categories_equipment', 'shumani_categories_equipment');
+
+// <div class="elementor-element elementor-element-d79c265 e-flex e-con-boxed wpr-particle-no wpr-jarallax-no wpr-parallax-no wpr-sticky-section-no e-con e-parent" data-id="d79c265" data-element_type="container" data-core-v316-plus="true">
+// <div class="elementor-element elementor-element-d79c265 e-flex e-con-boxed wpr-particle-no wpr-jarallax-no wpr-parallax-no wpr-sticky-section-no e-con e-parent" data-core-v316-plus="true" data-element_type="container" data-id="d79c265">
